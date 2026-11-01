@@ -4,9 +4,16 @@ export class ApiError extends Error{
 
 export async function getJSON(url){
     const headers= {'User-Agent': 'github-profile-cli'};
+
     if(process.env.GITHUB_TOKEN) headers.Authorization = `Bearer ${process.env.GITHUB_TOKEN}`;
 
-    const res = await fetch(url,{headers});
+    let res;
+    try{
+        res = await fetch(url,{headers});
+    } catch{
+        throw new ApiError(`Could not reach Github, check your internet connection,`,0);
+    }
+    
     if(res.status === 404) throw new ApiError('User not found',404);
     if(res.status === 403 || res.status === 429){
         const reset = Number(res.headers.get('x-ratelimit-reset')) * 1000;
