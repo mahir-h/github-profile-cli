@@ -11,13 +11,14 @@ export async function getJSON(url){
     try{
         res = await fetch(url,{headers});
     } catch{
-        throw new ApiError(`Could not reach Github, check your internet connection,`,0);
+        throw new ApiError(`Could not reach Github, check your internet connection.`,0);
     }
     
     if(res.status === 404) throw new ApiError('User not found',404);
     if(res.status === 403 || res.status === 429){
         const reset = Number(res.headers.get('x-ratelimit-reset')) * 1000;
-        throw new ApiError(`Rate limited.Try again at  ${new Date(reset).toLocaleTimeString()}`, res.status);
+        const when = reset ? new Date(reset).toLocaleTimeString() : 'later';
+        throw new ApiError(`Rate limited. Try again at ${when}`, res.status);
     }
     if(!res.ok) throw new ApiError(`Github error ${res.status}`, res.status);
     return res.json();
