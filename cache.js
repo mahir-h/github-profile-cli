@@ -5,7 +5,7 @@ const CACHE_DIR = path.join(process.cwd(), '.cache'); //cache folder inside the 
 const TEN_MINUTES = 10 * 60 * 1000; // becomes 6,00,000ms
 
 function cacheFile(u){
-    return path.join(CACHE_DIR, `${u.tolowerCase()}.json`);
+    return path.join(CACHE_DIR, `${u.toLowerCase()}.json`);
 }
 
 export async function readCache(u){
